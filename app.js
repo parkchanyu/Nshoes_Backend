@@ -16,10 +16,11 @@ app.use(cors({
   }));  
 
 const db = mysql.createConnection({
-  host: "localhost",
+  host: "svc.sel5.cloudtype.app",
   user: "root",
-  password: "12345678",
+  password: "0810",
   database: "shopping",
+  port: 32243
 });
 //JWT 유효성 검사
 function authenticateToken(req, res, next) {
@@ -170,6 +171,36 @@ app.get("/products", (req, res) => {
     res.json(results);
   });
 });
+//상품 정보
+app.get("/products/:id", (req, res) => {
+  const productId = req.params.id;
+
+  db.query(`
+    SELECT products.*, GROUP_CONCAT(Images.imageURL SEPARATOR '||') as images
+    FROM products 
+    LEFT JOIN Images ON products.id = Images.id
+    WHERE products.id = ?
+    GROUP BY products.id`, 
+    [productId],
+    (error, results) => {
+      if (error) {
+        console.log(error);
+        return res.status(500).json({ error });
+      }
+
+      if (results.length === 0) {
+        return res.status(404).json({ message: 'Product not found' });
+      }
+
+      const product = results[0];
+      product.images = product.images ? product.images.split('||') : [];
+
+      res.json(product);
+    }
+  );
+});
+
+
 
 // 주문 생성
 app.post("/orders", (req, res) => {
