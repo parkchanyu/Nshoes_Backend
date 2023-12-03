@@ -10,7 +10,12 @@ const cors = require('cors');
 const app = express();
 app.use(bodyParser.json());
 app.use(morgan("combined")); // 콘솔에 요청 로그를 출력하는 미들웨어를 추가
-app.use(cors());
+app.use(
+  cors({
+    origin: 'https://web-nshoesfront-1igmo82clotxbvvk.sel5.cloudtype.app/',
+    credentials: true
+  })
+);
 
 const db = mysql.createConnection({
   host: "svc.sel5.cloudtype.app",
@@ -32,6 +37,7 @@ function authenticateToken(req, res, next) {
     next();
   });
 }
+
 
 db.connect((err) => {
   if (err) throw err;
