@@ -12,10 +12,14 @@ app.use(bodyParser.json());
 app.use(morgan("combined")); // 콘솔에 요청 로그를 출력하는 미들웨어를 추가
 app.use(
   cors({
-    origin: 'https://web-nshoesmarket-1igmo82clotxbvvk.sel5.cloudtype.app',
+    origin: [
+      'https://web-nshoesmarket-1igmo82clotxbvvk.sel5.cloudtype.app',
+      'https://nexus.ai.kr'  // 추가한 도메인
+    ],
     credentials: true
   })
 );
+
 
 const db = mysql.createConnection({
   host: "svc.sel5.cloudtype.app",
